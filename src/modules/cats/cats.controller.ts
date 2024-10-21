@@ -10,19 +10,22 @@ import {
 } from '@nestjs/common';
 import { AddNewCatRequestDto } from './dto/add-new-cat.request.dto';
 import { GetAllCatsRequestQueryDto } from './dto/get-all-cats.request.dto';
+import { CatsService } from './cats.service';
 
 @Controller('cats')
 export class CatsController {
+  constructor(private readonly catsService: CatsService) {}
+
   @Get()
-  async getAllCats(@Query() query: GetAllCatsRequestQueryDto): Promise<string> {
+  async getAllCats(@Query() query: GetAllCatsRequestQueryDto): Promise<any> {
     const { limit } = query;
-    return `This action returns all cats include ${limit} items`;
+    return this.catsService.findAllCats();
   }
 
   @Post()
   async addNewCat(@Body() body: AddNewCatRequestDto): Promise<string> {
     const { name, age, breed } = body;
-    return `This action adds a new cat ${name}/${age}/${breed}`;
+    return this.catsService.addNewCat({ name, age, breed });
   }
 
   @Get(':id')
